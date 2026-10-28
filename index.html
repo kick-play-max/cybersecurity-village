@@ -82,6 +82,8 @@ footer b{color:var(--y)}
 .vid{position:relative;margin:auto;width:min(92vw,420px);aspect-ratio:3/4;border-radius:22px;overflow:hidden;background:#000}
 .vid video{width:100%;height:100%;object-fit:cover}
 .vid:after{content:"";position:absolute;inset:16%;border:4px solid var(--y);border-radius:20px;box-shadow:0 0 0 999px #0007}
+#reader{width:min(92vw,440px);margin:auto;border-radius:22px;overflow:hidden;background:#000;align-self:center}
+.fb{display:flex;justify-content:center;padding:0 16px calc(20px + env(safe-area-inset-bottom))}
 .msg{color:#fff;text-align:center;padding:0 16px 20px;font-weight:600}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--k);color:var(--y);font-weight:800;padding:13px 22px;border-radius:99px;z-index:90;box-shadow:0 8px 24px #0005;max-width:90vw;text-align:center}
 .toast.w{background:#c4001a;color:#fff}
@@ -103,7 +105,7 @@ footer b{color:var(--y)}
 <main class="wrap"><h2 id="gtitle"></h2><p id="gsub"></p><div id="done"></div><div class="grid" id="grid"></div></main>
 <footer><img src="assets/partenaires.png" alt="MTN · MoMo · bayobab"><div><b id="slogan"></b></div><div>InformationSecurity.CM@mtn.com</div></footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script>
 /* ========== CONFIG ========== */
 const STANDS=[{token:"k7x2",card:"hygiene"},{token:"m4q9",card:"phishing"},{token:"z8p5",card:"incident"}];
@@ -114,11 +116,11 @@ const L={
 fr:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visitez les 3 stands, scannez leur QR code et collectez vos kits de survie numérique.",
  ptitle:"Ma collection",psub:n=>`${n}/3 kits débloqués`,scan:"📷 Scanner un QR code",gift:"🎁 Réclamer mon cadeau",gtitle:"Mes kits de survie",gsub:"Touchez une carte pour la lire en grand écran.",
  locked:"Verrouillé",lockedS:"Scannez le QR du stand",open:"Lire",stand:"Stand",slogan:"Sécurisons notre avenir numérique",got:"🎉 Nouveau kit obtenu !",already:"Kit déjà obtenu.",bad:"QR code non reconnu.",
- cam:"Caméra indisponible : scannez le QR avec l'appareil photo de votre téléphone.",point:"Placez le QR code dans le cadre",done:"✅ Cadeau déjà réclamé. Merci d'avoir joué !",confirm:"Réclamer le cadeau ? Action unique, à faire devant un agent.",pin:"PIN agent (4 chiffres)",badpin:"PIN incorrect.",dl:"⬇",zoom:"🔍",close:"✕"},
+ cam:"Caméra indisponible : scannez le QR avec l'appareil photo de votre téléphone.",point:"Placez le QR code dans le cadre",done:"✅ Cadeau déjà réclamé. Merci d'avoir joué !",confirm:"Réclamer le cadeau ? Action unique, à faire devant un agent.",pin:"PIN agent (4 chiffres)",badpin:"PIN incorrect.",dl:"⬇",zoom:"🔍",close:"✕",photo:"🖼 Utiliser une photo du QR"},
 en:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visit the 3 stands, scan their QR code and collect your digital survival kits.",
  ptitle:"My collection",psub:n=>`${n}/3 kits unlocked`,scan:"📷 Scan a QR code",gift:"🎁 Claim my gift",gtitle:"My survival kits",gsub:"Tap a card to read it full screen.",
  locked:"Locked",lockedS:"Scan the stand's QR code",open:"Read",stand:"Stand",slogan:"Securing Our Digital Future",got:"🎉 New kit collected!",already:"Kit already collected.",bad:"QR code not recognized.",
- cam:"Camera unavailable: scan the QR with your phone's camera app.",point:"Place the QR code inside the frame",done:"✅ Gift already claimed. Thanks for playing!",confirm:"Claim your gift? One-time action, do it in front of an agent.",pin:"Agent PIN (4 digits)",badpin:"Wrong PIN.",dl:"⬇",zoom:"🔍",close:"✕"}};
+ cam:"Camera unavailable: scan the QR with your phone's camera app.",point:"Place the QR code inside the frame",done:"✅ Gift already claimed. Thanks for playing!",confirm:"Claim your gift? One-time action, do it in front of an agent.",pin:"Agent PIN (4 digits)",badpin:"Wrong PIN.",dl:"⬇",zoom:"🔍",close:"✕",photo:"🖼 Use a photo of the QR"}};
 /* ========== ÉTAT ========== */
 const KEY="mtn_cv_v1";let mem=null;
 const load=()=>{try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)return s}catch(e){if(mem)return mem}return{lang:(navigator.language||"fr").startsWith("en")?"en":"fr",cards:[],redeemed:null}};
@@ -163,19 +165,22 @@ function openCard(id){
  document.removeEventListener("keydown",key);document.addEventListener("keydown",key);window._go=go;
 }
 function key(e){if(e.key==="Escape")closeLb();if(e.key==="ArrowRight"&&window._go)window._go(1);if(e.key==="ArrowLeft"&&window._go)window._go(-1)}
-/* ========== SCAN ========== */
-let stream=null,raf=0;
-function stopCam(){cancelAnimationFrame(raf);if(stream){stream.getTracks().forEach(x=>x.stop());stream=null}}
-async function openScan(){
+/* ========== SCAN (html5-qrcode) ========== */
+let scanner=null;
+function stopCam(){if(scanner){const x=scanner;scanner=null;try{x.stop().then(()=>x.clear()).catch(()=>{})}catch(e){}}}
+function openScan(){
  const T=t(),o=document.createElement("div");o.className="lb";o.id="lb";
- o.innerHTML=`<div class="lbt"><strong>${T.scan}</strong><button class="ib" id="cl">${T.close}</button></div><div class="stage"><div class="vid"><video id="v" playsinline muted></video></div></div><p class="msg" id="m">${T.point}</p>`;
+ o.innerHTML=`<div class="lbt"><strong>${T.scan}</strong><button class="ib" id="cl">${T.close}</button></div>
+ <div class="stage"><div id="reader"></div></div><p class="msg" id="m">${T.point}</p>
+ <div class="fb"><label class="ib" style="cursor:pointer">${T.photo}<input type="file" id="ff" accept="image/*" hidden></label></div>`;
  document.body.appendChild(o);$("#cl").onclick=closeLb;
- try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});
-  const v=$("#v");v.srcObject=stream;await v.play();const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
-  const loop=()=>{if(v.readyState===v.HAVE_ENOUGH_DATA){const k=Math.min(1,640/v.videoWidth);cv.width=v.videoWidth*k;cv.height=v.videoHeight*k;cx.drawImage(v,0,0,cv.width,cv.height);
-   const d=cx.getImageData(0,0,cv.width,cv.height),r=window.jsQR&&jsQR(d.data,cv.width,cv.height,{inversionAttempts:"dontInvert"});
-   if(r&&r.data){closeLb();handle(parse(r.data));return}}raf=requestAnimationFrame(loop)};loop();
- }catch(e){$("#m").textContent=T.cam}
+ let fired=false;const ok=txt=>{if(fired)return;fired=true;closeLb();handle(parse(txt))};
+ scanner=new Html5Qrcode("reader",{formatsToSupport:[Html5QrcodeSupportedFormats.QR_CODE],verbose:false});
+ scanner.start({facingMode:"environment"},{fps:12,qrbox:(w,h)=>{const m=Math.floor(Math.min(w,h)*.72);return{width:m,height:m}}},ok,()=>{})
+  .catch(()=>{$("#m").textContent=T.cam});
+ $("#ff").onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  try{if(scanner){await scanner.stop();}}catch(_){}
+  try{const r=new Html5Qrcode("reader");const txt=await r.scanFile(f,false);ok(txt)}catch(_){$("#m").textContent=T.bad}};
 }
 const parse=d=>{try{return new URL(d).searchParams.get("c")||""}catch(e){return String(d).trim()}};
 function handle(tok){
