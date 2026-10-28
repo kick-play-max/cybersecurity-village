@@ -1,0 +1,5 @@
+CYBERSECURITY VILLAGE
+1. Hébergez le dossier tel quel (Netlify Drop, GitHub Pages, etc.).
+2. Ouvrez  votre-site/qr.html : les 3 QR sont générés avec l'adresse réelle du site -> Imprimer.
+3. Codes : k7x2 = Cyber-hygiène, m4q9 = Phishing, z8p5 = Réponse à incident (modifiables dans index.html, const STANDS).
+Dossier qr/ : QR "token seul", lisibles uniquement par le scanner intégré au site.

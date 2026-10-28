@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR codes – Cybersecurity Village</title>
+<style>
+body{font-family:Poppins,"Segoe UI",system-ui,sans-serif;background:#f6f4ec;margin:0;padding:20px;color:#0b0b0b}
+header{max-width:1000px;margin:auto 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:0 auto 18px}
+input{flex:1;min-width:260px;padding:12px 14px;border:2px solid #0b0b0b;border-radius:12px;font:inherit}
+button{background:#0b0b0b;color:#ffcb05;font-weight:800;padding:12px 20px;border:0;border-radius:12px;cursor:pointer;font:inherit;font-weight:800}
+.g{max-width:1000px;margin:auto;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.c{background:#fff;border:3px solid #0b0b0b;border-radius:22px;overflow:hidden;text-align:center;break-inside:avoid}
+.c .h{background:#ffcb05;font-weight:900;text-transform:uppercase;padding:14px 10px}
+.c .q{display:flex;justify-content:center;padding:22px}
+.c small{display:block;padding:0 12px 16px;color:#6b6b6b;word-break:break-all;font-size:.7rem}
+.c img{max-width:100%}
+@media print{header{display:none}body{background:#fff}}
+</style></head><body>
+<header><input id="u" aria-label="URL du site"><button onclick="gen()">Générer</button><button onclick="print()">🖨 Imprimer</button></header>
+<div class="g" id="g"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const S=[["k7x2","Stand 1 · Cyber-hygiène"],["m4q9","Stand 2 · Phishing"],["z8p5","Stand 3 · Réponse à incident"]];
+$u=document.getElementById("u");$u.value=location.href.replace(/qr\.html.*$/,"");
+function gen(){const g=document.getElementById("g");g.innerHTML="";const b=$u.value.replace(/\/?$/,"/");
+ S.forEach(([k,n])=>{const c=document.createElement("div");c.className="c";c.innerHTML=`<div class="h">🛡 ${n}</div><div class="q"></div><small>${b}?c=${k}</small>`;g.appendChild(c);
+  new QRCode(c.querySelector(".q"),{text:`${b}?c=${k}`,width:220,height:220,correctLevel:QRCode.CorrectLevel.H})})}
+gen();
+</script></body></html>
