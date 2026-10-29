@@ -14,14 +14,14 @@ button{background:#0b0b0b;color:#ffcb05;font-weight:800;padding:12px 20px;border
 .c img{max-width:100%}
 @media print{header{display:none}body{background:#fff}}
 </style></head><body>
-<header><input id="u" aria-label="URL du site"><button onclick="gen()">Générer</button><button onclick="print()">🖨 Imprimer</button></header>
+<header><input id="u" aria-label="URL du site"><button onclick="gen()">Générer</button><button onclick="print()">Imprimer</button></header>
 <div class="g" id="g"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const S=[["k7x2","Stand 1 · Cyber-hygiène"],["m4q9","Stand 2 · Phishing"],["z8p5","Stand 3 · Réponse à incident"]];
 $u=document.getElementById("u");$u.value=location.href.replace(/qr\.html.*$/,"");
 function gen(){const g=document.getElementById("g");g.innerHTML="";const b=$u.value.replace(/\/?$/,"/");
- S.forEach(([k,n])=>{const c=document.createElement("div");c.className="c";c.innerHTML=`<div class="h">🛡 ${n}</div><div class="q"></div><small>${b}?c=${k}</small>`;g.appendChild(c);
+ S.forEach(([k,n])=>{const c=document.createElement("div");c.className="c";c.innerHTML=`<div class="h">${n}</div><div class="q"></div><small>${b}?c=${k}</small><div style="font-weight:900;font-size:1.3rem;padding-bottom:14px">Code : ${k}</div>`;g.appendChild(c);
   new QRCode(c.querySelector(".q"),{text:`${b}?c=${k}`,width:220,height:220,correctLevel:QRCode.CorrectLevel.H})})}
 gen();
 </script></body></html>
