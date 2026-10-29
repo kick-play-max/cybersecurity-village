@@ -1,27 +1,205 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>QR codes – Cybersecurity Village</title>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000">
+<title>Cybersecurity Village – MTN Cybersecurity Awareness Month</title>
 <style>
-body{font-family:Poppins,"Segoe UI",system-ui,sans-serif;background:#f6f4ec;margin:0;padding:20px;color:#0b0b0b}
-header{max-width:1000px;margin:auto 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:0 auto 18px}
-input{flex:1;min-width:260px;padding:12px 14px;border:2px solid #0b0b0b;border-radius:12px;font:inherit}
-button{background:#0b0b0b;color:#ffcb05;font-weight:800;padding:12px 20px;border:0;border-radius:12px;cursor:pointer;font:inherit;font-weight:800}
-.g{max-width:1000px;margin:auto;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
-.c{background:#fff;border:3px solid #0b0b0b;border-radius:22px;overflow:hidden;text-align:center;break-inside:avoid}
-.c .h{background:#ffcb05;font-weight:900;text-transform:uppercase;padding:14px 10px}
-.c .q{display:flex;justify-content:center;padding:22px}
-.c small{display:block;padding:0 12px 16px;color:#6b6b6b;word-break:break-all;font-size:.7rem}
-.c img{max-width:100%}
-@media print{header{display:none}body{background:#fff}}
-</style></head><body>
-<header><input id="u" aria-label="URL du site"><button onclick="gen()">Générer</button><button onclick="print()">Imprimer</button></header>
-<div class="g" id="g"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+:root{--y:#ffcb05;--y2:#e6b600;--k:#0b0b0b;--k2:#161616;--w:#fff;--g:#6b6b6b;--bg:#f6f4ec;--ok:#12a150;--r:22px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:"Poppins","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:var(--bg);color:var(--k);line-height:1.45;min-height:100vh}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--y);outline-offset:3px}
+[hidden]{display:none!important}
+/* header */
+.bar{background:var(--w);display:flex;justify-content:space-between;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) clamp(14px,4vw,40px) 10px;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px #0001}
+.bar img{height:clamp(26px,4.2vw,40px);width:auto;max-width:62%}
+.lang{display:flex;background:#0001;border-radius:99px;padding:3px}
+.lang button{font-weight:700;font-size:.8rem;padding:7px 14px;border-radius:99px}
+.lang .on{background:var(--k);color:var(--y)}
+.hero{background:var(--k);color:var(--w);position:relative;overflow:hidden;padding:clamp(28px,6vw,72px) clamp(16px,5vw,56px) clamp(60px,8vw,96px)}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;background:var(--y)}
+.hero:before{width:380px;height:380px;right:-120px;top:-140px;opacity:.95}
+.hero:after{width:220px;height:220px;left:-90px;bottom:-110px;opacity:.18}
+.hero-in{max-width:1180px;margin:auto;position:relative;z-index:1;display:grid;gap:18px;grid-template-columns:1fr}
+.hero img{width:min(360px,78%);height:auto}
+.pill{display:inline-block;background:var(--y);color:var(--k);font-weight:800;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:99px;width:fit-content}
+.hero h1{font-size:clamp(2.2rem,7vw,4.6rem);font-weight:900;line-height:.98;text-transform:uppercase;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--y)}
+.hero p{max-width:560px;color:#d4d4d4;font-size:clamp(.95rem,2vw,1.15rem)}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.acts span{border:2px solid #fff3;border-radius:99px;padding:7px 16px;font-weight:700;font-size:.85rem;background:#ffffff0d}
+/* progress panel */
+.panel{max-width:1180px;margin:-44px auto 0;padding:0 clamp(14px,4vw,32px);position:relative;z-index:2}
+.pbox{background:var(--w);border:3px solid var(--k);border-radius:var(--r);padding:clamp(16px,3vw,26px);box-shadow:0 10px 0 var(--y);display:grid;gap:16px;grid-template-columns:1fr auto;align-items:center}
+.pbox h2{font-size:clamp(1.1rem,2.6vw,1.5rem);font-weight:900;text-transform:uppercase}
+.pbox p{color:var(--g);font-size:.9rem}
+.dots{display:flex;gap:8px;margin-top:10px}
+.dots i{flex:1;height:12px;border-radius:8px;background:#e8e3cc;transition:.5s}
+.dots i.on{background:var(--k)}
+.cta{display:inline-flex;gap:10px;align-items:center;justify-content:center;background:var(--k);color:var(--y);font-weight:800;padding:15px 28px;border-radius:16px;font-size:1rem;min-height:52px;box-shadow:0 6px 18px #0003;transition:transform .1s}
+.cta:active{transform:scale(.97)}
+.cta.gift{background:var(--y);color:var(--k);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 12px #ffcb0000,0 6px 18px #0003}0%,100%{box-shadow:0 0 0 0 #ffcb0099,0 6px 18px #0003}}
+/* cards */
+.wrap{max-width:1180px;margin:auto;padding:36px clamp(14px,4vw,32px) 70px}
+.wrap>h2{font-size:clamp(1.3rem,3vw,2rem);font-weight:900;text-transform:uppercase;margin-bottom:6px}
+.wrap>p{color:var(--g);margin-bottom:22px}
+.grid{display:grid;gap:clamp(14px,2.4vw,28px);grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.tile{background:var(--w);border-radius:var(--r);border:3px solid var(--k);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.tile.have:hover{transform:translateY(-6px);box-shadow:0 12px 0 var(--y)}
+.thumb{position:relative;background:var(--y);aspect-ratio:650/1004;max-height:560px;width:100%;overflow:hidden;display:grid;place-items:center}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;cursor:zoom-in}
+.tile:not(.have) .thumb img{filter:blur(16px) grayscale(1) brightness(.7);transform:scale(1.1);cursor:default}
+.lock{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:var(--w);gap:6px;padding:16px;font-weight:800}
+.lock b{display:block}.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
+.tile.have .lock{display:none}
+.meta{padding:16px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.meta h3{font-size:1.05rem;font-weight:900;text-transform:uppercase;line-height:1.1}
+.meta small{color:var(--g);font-weight:600}
+.open{background:var(--k);color:var(--y);font-weight:800;padding:11px 16px;border-radius:12px;white-space:nowrap}
+.tile:not(.have) .open{background:#e8e3cc;color:var(--g);cursor:not-allowed}
+.done{background:#e8f8ee;border:2px solid var(--ok);color:#0b5d2a;border-radius:16px;padding:14px 18px;font-weight:700;margin-bottom:22px}
+footer{background:var(--k);color:#bbb;text-align:center;padding:28px 16px calc(28px + env(safe-area-inset-bottom));font-size:.88rem}
+footer img{height:34px;background:#fff;border-radius:10px;padding:6px 12px;margin-bottom:12px;max-width:90%}
+footer b{color:var(--y)}
+/* lightbox / fullscreen */
+.lb{position:fixed;inset:0;background:#000e;z-index:60;display:flex;flex-direction:column;animation:f .2s}
+@keyframes f{from{opacity:0}}
+.lbt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;color:var(--w)}
+.lbt strong{font-size:.95rem;text-transform:uppercase}
+.lbt div{display:flex;gap:8px}
+.ib{background:#ffffff22;color:var(--w);border-radius:12px;min-width:44px;height:44px;padding:0 14px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.ib:hover{background:var(--y);color:var(--k)}
+.stage{flex:1;overflow:auto;display:flex;padding:6px 14px 18px;-webkit-overflow-scrolling:touch}
+.stage img{margin:auto;max-height:100%;max-width:100%;object-fit:contain;border-radius:14px;box-shadow:0 20px 60px #000a;transition:.2s}
+.stage.zoom{cursor:zoom-out}
+.stage.zoom img{max-height:none;max-width:none;width:max(100%,900px)}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:var(--y);color:var(--k);font-size:1.6rem;font-weight:900;box-shadow:0 4px 14px #0008}
+.nav.l{left:14px}.nav.r{right:14px}
+.vid{position:relative;margin:auto;width:min(92vw,420px);aspect-ratio:3/4;border-radius:22px;overflow:hidden;background:#000}
+.vid video{width:100%;height:100%;object-fit:cover}
+.vid:after{content:"";position:absolute;inset:12%;border:4px solid var(--y);border-radius:20px;pointer-events:none}
+.fb{display:flex;justify-content:center;padding:0 16px calc(20px + env(safe-area-inset-bottom))}
+.man{gap:8px}.man input{flex:1;max-width:260px;padding:0 14px;height:44px;border-radius:12px;border:0;font:inherit}
+.msg{color:#fff;text-align:center;padding:0 16px 20px;font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--k);color:var(--y);font-weight:800;padding:13px 22px;border-radius:99px;z-index:90;box-shadow:0 8px 24px #0005;max-width:90vw;text-align:center}
+.toast.w{background:#c4001a;color:#fff}
+@media(max-width:640px){.pbox{grid-template-columns:1fr}.cta{width:100%}.nav{width:44px;height:44px}.thumb{max-height:none}}
+@media(min-width:1000px){.thumb{max-height:620px}}
+@media print{.bar,.hero,.panel,footer{display:none}}
+</style>
+</head>
+<body>
+<header class="bar"><img src="assets/partenaires.png" alt="MTN · MoMo · bayobab"><div class="lang"><button data-l="fr">FR</button><button data-l="en">EN</button></div></header>
+<section class="hero"><div class="hero-in">
+  <img src="assets/cybersecurity.png" alt="Cybersecurity Awareness Month">
+  <span class="pill" id="pill"></span>
+  <h1 id="h1"></h1>
+  <p id="sub"></p>
+  <div class="acts" id="acts"></div>
+</div></section>
+<section class="panel"><div class="pbox"><div><h2 id="ptitle"></h2><p id="psub"></p><div class="dots" id="dots"></div></div><div id="pcta"></div></div></section>
+<main class="wrap"><h2 id="gtitle"></h2><p id="gsub"></p><div id="done"></div><div class="grid" id="grid"></div></main>
+<footer><img src="assets/partenaires.png" alt="MTN · MoMo · bayobab"><div><b id="slogan"></b></div><div>InformationSecurity.CM@mtn.com</div></footer>
+
+<script src="assets/qr-scanner.umd.min.js"></script>
 <script>
-const S=[["k7x2","Stand 1 · Cyber-hygiène"],["m4q9","Stand 2 · Phishing"],["z8p5","Stand 3 · Réponse à incident"]];
-$u=document.getElementById("u");$u.value=location.href.replace(/qr\.html.*$/,"");
-function gen(){const g=document.getElementById("g");g.innerHTML="";const b=$u.value.replace(/\/?$/,"/");
- S.forEach(([k,n])=>{const c=document.createElement("div");c.className="c";c.innerHTML=`<div class="h">${n}</div><div class="q"></div><small>${b}?c=${k}</small><div style="font-weight:900;font-size:1.3rem;padding-bottom:14px">Code : ${k}</div>`;g.appendChild(c);
-  new QRCode(c.querySelector(".q"),{text:`${b}?c=${k}`,width:220,height:220,correctLevel:QRCode.CorrectLevel.H})})}
-gen();
-</script></body></html>
+/* ========== CONFIG ========== */
+const STANDS=[{token:"k7x2",card:"hygiene"},{token:"m4q9",card:"phishing"},{token:"z8p5",card:"incident"}];
+const STAFF_PIN=""; // 4 chiffres pour valider le cadeau ; "" = désactivé
+const P={hygiene:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',phishing:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',incident:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18.5v.01"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/>',gift:'<rect x="3" y="8" width="18" height="4"/><path d="M5 12h14v9H5zM12 8v13M12 8c-3 0-4-4-1.5-4S12 8 12 8zM12 8c3 0 4-4 1.5-4S12 8 12 8z"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-8 9"/>',zoom:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/>',dl:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',l:'<path d="M15 5l-7 7 7 7"/>',r:'<path d="M9 5l7 7-7 7"/>'};
+const ic=(n,z)=>`<svg class="ic" ${z?`style="width:${z}px;height:${z}px"`:""} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+const ICON={hygiene:ic("hygiene"),phishing:ic("phishing"),incident:ic("incident")};
+const NAME={hygiene:{fr:"Cyber-hygiène",en:"Cyber Hygiene"},phishing:{fr:"Phishing",en:"Phishing"},incident:{fr:"Réponse à incident",en:"Incident Response"}};
+const L={
+fr:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visitez les 3 stands, scannez leur QR code et collectez vos kits de survie numérique.",
+ ptitle:"Ma collection",psub:n=>`${n}/3 kits débloqués`,scan:"Scanner un QR code",gift:"Réclamer mon cadeau",gtitle:"Mes kits de survie",gsub:"Touchez une carte pour la lire en grand écran.",
+ locked:"Verrouillé",lockedS:"Scannez le QR du stand",open:"Lire",stand:"Stand",slogan:"Sécurisons notre avenir numérique",got:"Nouveau kit obtenu !",already:"Kit déjà obtenu.",bad:"QR code non reconnu.",
+ cam:"Caméra indisponible : scannez le QR avec l'appareil photo de votre téléphone.",point:"Placez le QR code dans le cadre",done:"Cadeau déjà réclamé. Merci d'avoir joué !",confirm:"Réclamer le cadeau ? Action unique, à faire devant un agent.",pin:"PIN agent (4 chiffres)",badpin:"PIN incorrect.",photo:"Utiliser une photo du QR",code:"Ou tapez le code du stand",inapp:"Ouvrez ce lien dans Chrome ou Safari (pas dans WhatsApp/Facebook)."},
+en:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visit the 3 stands, scan their QR code and collect your digital survival kits.",
+ ptitle:"My collection",psub:n=>`${n}/3 kits unlocked`,scan:"Scan a QR code",gift:"Claim my gift",gtitle:"My survival kits",gsub:"Tap a card to read it full screen.",
+ locked:"Locked",lockedS:"Scan the stand's QR code",open:"Read",stand:"Stand",slogan:"Securing Our Digital Future",got:"New kit collected!",already:"Kit already collected.",bad:"QR code not recognized.",
+ cam:"Camera unavailable: scan the QR with your phone's camera app.",point:"Place the QR code inside the frame",done:"Gift already claimed. Thanks for playing!",confirm:"Claim your gift? One-time action, do it in front of an agent.",pin:"Agent PIN (4 digits)",badpin:"Wrong PIN.",photo:"Use a photo of the QR",code:"Or type the stand code",inapp:"Open this link in Chrome or Safari (not inside WhatsApp/Facebook)."}};
+/* ========== ÉTAT ========== */
+const KEY="mtn_cv_v1";let mem=null;
+const load=()=>{try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)return s}catch(e){if(mem)return mem}return{lang:(navigator.language||"fr").startsWith("en")?"en":"fr",cards:[],redeemed:null}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){mem=S}};
+let S=load();const t=()=>L[S.lang],$=s=>document.querySelector(s);
+const img=(id)=>`cartes/${id}-${S.lang}.png`;
+const toast=(m,w)=>{const d=document.createElement("div");d.className="toast"+(w?" w":"");d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2800)};
+/* ========== RENDU ========== */
+function render(){
+ const T=t(),n=S.cards.length,all=n===STANDS.length;document.documentElement.lang=S.lang;
+ document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===S.lang));
+ $("#pill").textContent=T.pill;$("#h1").innerHTML=T.h1.join("<br>");$("#sub").textContent=T.sub;
+ $("#acts").innerHTML=STANDS.map(s=>`<span>${ICON[s.card]} ${NAME[s.card][S.lang]}</span>`).join("");
+ $("#ptitle").textContent=T.ptitle;$("#psub").textContent=T.psub(n);
+ $("#dots").innerHTML=STANDS.map((s,i)=>`<i class="${i<n?"on":""}"></i>`).join("");
+ $("#pcta").innerHTML=S.redeemed?"":all?`<button class="cta gift" id="gift">${ic("gift")} ${T.gift}</button>`:`<button class="cta" id="scan">${ic("cam")} ${T.scan}</button>`;
+ $("#gtitle").textContent=T.gtitle;$("#gsub").textContent=T.gsub;$("#slogan").textContent=T.slogan;
+ $("#done").innerHTML=S.redeemed?`<div class="done">${ic("ok")} ${T.done}</div>`:"";
+ $("#grid").innerHTML=STANDS.map((s,i)=>{const have=S.cards.includes(s.token),c=s.card;
+  return `<article class="tile ${have?"have":""}"><div class="thumb"><img src="${img(c)}" alt="${NAME[c][S.lang]}" ${have?`data-o="${c}"`:""}><div class="lock"><b>${ic("lock",46)}</b><span>${T.stand} ${i+1} · ${T.locked}</span><small>${T.lockedS}</small></div></div>
+  <div class="meta"><div><h3>${ICON[c]} ${NAME[c][S.lang]}</h3><small>${T.stand} ${i+1}</small></div><button class="open" ${have?`data-o="${c}"`:"disabled"}>${have?T.open:ic("lock")}</button></div></article>`}).join("");
+ document.querySelectorAll("[data-o]").forEach(e=>e.onclick=()=>openCard(e.dataset.o));
+ const sc=$("#scan");if(sc)sc.onclick=openScan;const g=$("#gift");if(g)g.onclick=redeem;
+}
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{S.lang=b.dataset.l;save();render();if($("#lb"))openCard(cur)});
+/* ========== PLEIN ÉCRAN ========== */
+let cur=null;
+function closeLb(){const o=$("#lb");if(o)o.remove();stopCam();document.removeEventListener("keydown",key);cur=null}
+function owned(){return STANDS.filter(s=>S.cards.includes(s.token)).map(s=>s.card)}
+function openCard(id){
+ const T=t(),list=owned(),first=!$("#lb");cur=id;
+ if(!first)$("#lb").remove();
+ const o=document.createElement("div");o.className="lb";o.id="lb";
+ o.innerHTML=`<div class="lbt"><strong>${ICON[id]} ${NAME[id][S.lang]}</strong><div><button class="ib" id="zm" title="Zoom">${ic("zoom")}</button><a class="ib" href="${img(id)}" download style="text-decoration:none;color:inherit" title="Download">${ic("dl")}</a><button class="ib" id="cl">${ic("x")}</button></div></div>
+ <div class="stage" id="st"><img src="${img(id)}" alt="${NAME[id][S.lang]}"></div>
+ ${list.length>1?`<button class="nav l" id="pv">${ic("l",26)}</button><button class="nav r" id="nx">${ic("r",26)}</button>`:""}`;
+ document.body.appendChild(o);
+ const go=d=>openCard(list[(list.indexOf(cur)+d+list.length)%list.length]);
+ $("#cl").onclick=closeLb;const z=()=>$("#st").classList.toggle("zoom");$("#zm").onclick=z;$("#st img").onclick=z;
+ if(list.length>1){$("#pv").onclick=()=>go(-1);$("#nx").onclick=()=>go(1)}
+ let x0=0;o.ontouchstart=e=>x0=e.touches[0].clientX;o.ontouchend=e=>{const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>70&&list.length>1&&!$("#st").classList.contains("zoom"))go(d<0?1:-1)};
+ document.removeEventListener("keydown",key);document.addEventListener("keydown",key);window._go=go;
+}
+function key(e){if(e.key==="Escape")closeLb();if(e.key==="ArrowRight"&&window._go)window._go(1);if(e.key==="ArrowLeft"&&window._go)window._go(-1)}
+/* ========== SCAN (qr-scanner) ========== */
+let scanner=null;
+function stopCam(){if(scanner){try{scanner.stop();scanner.destroy()}catch(e){}scanner=null}}
+function openScan(){
+ const T=t(),o=document.createElement("div");o.className="lb";o.id="lb";
+ o.innerHTML=`<div class="lbt"><strong>${T.scan}</strong><button class="ib" id="cl">${ic("x")}</button></div>
+ <div class="stage"><div class="vid"><video id="v" playsinline muted></video></div></div><p class="msg" id="m">${T.point}</p>
+ <div class="fb"><label class="ib" style="cursor:pointer">${ic("img")}&nbsp;${T.photo}<input type="file" id="ff" accept="image/*" hidden></label></div>
+ <div class="fb man"><input id="mc" placeholder="${T.code}" autocapitalize="off" autocomplete="off"><button class="ib" id="mb">OK</button></div>`;
+ document.body.appendChild(o);$("#cl").onclick=closeLb;
+ let fired=false;const ok=txt=>{if(fired)return;fired=true;closeLb();handle(parse(txt))};
+ scanner=new QrScanner($("#v"),r=>ok(r.data),{returnDetailedScanResult:true,preferredCamera:"environment",maxScansPerSecond:25,highlightCodeOutline:true,
+  calculateScanRegion:v=>({x:0,y:0,width:v.videoWidth,height:v.videoHeight,downScaledWidth:900,downScaledHeight:Math.round(900*v.videoHeight/v.videoWidth)})});
+ scanner.start().catch(e=>{$("#m").textContent=T.cam+" ("+((e&&(e.name||e.message))||e)+")"+(/FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(navigator.userAgent)?" "+T.inapp:"")});
+ $("#mb").onclick=()=>{const v=$("#mc").value.trim().toLowerCase();if(v)ok(v)};
+ $("#ff").onchange=e=>{const f=e.target.files[0];if(!f)return;QrScanner.scanImage(f,{returnDetailedScanResult:true}).then(r=>ok(r.data)).catch(()=>{$("#m").textContent=T.bad})};
+}
+const parse=d=>{try{return new URL(d).searchParams.get("c")||""}catch(e){return String(d).trim()}};
+function handle(tok){
+ const T=t(),st=STANDS.find(s=>s.token===tok);
+ if(S.redeemed)return;if(!st)return toast(T.bad,1);
+ if(S.cards.includes(tok)){toast(T.already,1);return openCard(st.card)}
+ S.cards.push(tok);save();render();toast(T.got);openCard(st.card);
+}
+function redeem(){
+ const T=t();if(!confirm(T.confirm))return;
+ if(STAFF_PIN){const p=prompt(T.pin);if(p!==STAFF_PIN)return toast(T.badpin,1)}
+ S.redeemed=new Date().toISOString();save();render();
+}
+/* ========== DÉMARRAGE ========== */
+render();
+const c0=new URLSearchParams(location.search).get("c");
+if(c0){history.replaceState(null,"",location.pathname);handle(c0)}
+</script>
+</body>
+</html>
