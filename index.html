@@ -54,7 +54,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--y);outline-offset:3
 .thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;cursor:zoom-in}
 .tile:not(.have) .thumb img{filter:blur(16px) grayscale(1) brightness(.7);transform:scale(1.1);cursor:default}
 .lock{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:var(--w);gap:6px;padding:16px;font-weight:800}
-.lock b{font-size:3rem}
+.lock b{display:block}.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
 .tile.have .lock{display:none}
 .meta{padding:16px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between}
 .meta h3{font-size:1.05rem;font-weight:900;text-transform:uppercase;line-height:1.1}
@@ -81,9 +81,9 @@ footer b{color:var(--y)}
 .nav.l{left:14px}.nav.r{right:14px}
 .vid{position:relative;margin:auto;width:min(92vw,420px);aspect-ratio:3/4;border-radius:22px;overflow:hidden;background:#000}
 .vid video{width:100%;height:100%;object-fit:cover}
-.vid:after{content:"";position:absolute;inset:16%;border:4px solid var(--y);border-radius:20px;box-shadow:0 0 0 999px #0007}
-#reader{width:min(92vw,440px);margin:auto;border-radius:22px;overflow:hidden;background:#000;align-self:center}
+.vid:after{content:"";position:absolute;inset:12%;border:4px solid var(--y);border-radius:20px;pointer-events:none}
 .fb{display:flex;justify-content:center;padding:0 16px calc(20px + env(safe-area-inset-bottom))}
+.man{gap:8px}.man input{flex:1;max-width:260px;padding:0 14px;height:44px;border-radius:12px;border:0;font:inherit}
 .msg{color:#fff;text-align:center;padding:0 16px 20px;font-weight:600}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--k);color:var(--y);font-weight:800;padding:13px 22px;border-radius:99px;z-index:90;box-shadow:0 8px 24px #0005;max-width:90vw;text-align:center}
 .toast.w{background:#c4001a;color:#fff}
@@ -105,22 +105,24 @@ footer b{color:var(--y)}
 <main class="wrap"><h2 id="gtitle"></h2><p id="gsub"></p><div id="done"></div><div class="grid" id="grid"></div></main>
 <footer><img src="assets/partenaires.png" alt="MTN · MoMo · bayobab"><div><b id="slogan"></b></div><div>InformationSecurity.CM@mtn.com</div></footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script src="assets/qr-scanner.umd.min.js"></script>
 <script>
 /* ========== CONFIG ========== */
 const STANDS=[{token:"k7x2",card:"hygiene"},{token:"m4q9",card:"phishing"},{token:"z8p5",card:"incident"}];
 const STAFF_PIN=""; // 4 chiffres pour valider le cadeau ; "" = désactivé
-const ICON={hygiene:"🧼",phishing:"🎣",incident:"🚨"};
+const P={hygiene:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',phishing:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',incident:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18.5v.01"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/>',gift:'<rect x="3" y="8" width="18" height="4"/><path d="M5 12h14v9H5zM12 8v13M12 8c-3 0-4-4-1.5-4S12 8 12 8zM12 8c3 0 4-4 1.5-4S12 8 12 8z"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-8 9"/>',zoom:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/>',dl:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',l:'<path d="M15 5l-7 7 7 7"/>',r:'<path d="M9 5l7 7-7 7"/>'};
+const ic=(n,z)=>`<svg class="ic" ${z?`style="width:${z}px;height:${z}px"`:""} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+const ICON={hygiene:ic("hygiene"),phishing:ic("phishing"),incident:ic("incident")};
 const NAME={hygiene:{fr:"Cyber-hygiène",en:"Cyber Hygiene"},phishing:{fr:"Phishing",en:"Phishing"},incident:{fr:"Réponse à incident",en:"Incident Response"}};
 const L={
 fr:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visitez les 3 stands, scannez leur QR code et collectez vos kits de survie numérique.",
- ptitle:"Ma collection",psub:n=>`${n}/3 kits débloqués`,scan:"📷 Scanner un QR code",gift:"🎁 Réclamer mon cadeau",gtitle:"Mes kits de survie",gsub:"Touchez une carte pour la lire en grand écran.",
- locked:"Verrouillé",lockedS:"Scannez le QR du stand",open:"Lire",stand:"Stand",slogan:"Sécurisons notre avenir numérique",got:"🎉 Nouveau kit obtenu !",already:"Kit déjà obtenu.",bad:"QR code non reconnu.",
- cam:"Caméra indisponible : scannez le QR avec l'appareil photo de votre téléphone.",point:"Placez le QR code dans le cadre",done:"✅ Cadeau déjà réclamé. Merci d'avoir joué !",confirm:"Réclamer le cadeau ? Action unique, à faire devant un agent.",pin:"PIN agent (4 chiffres)",badpin:"PIN incorrect.",dl:"⬇",zoom:"🔍",close:"✕",photo:"🖼 Utiliser une photo du QR"},
+ ptitle:"Ma collection",psub:n=>`${n}/3 kits débloqués`,scan:"Scanner un QR code",gift:"Réclamer mon cadeau",gtitle:"Mes kits de survie",gsub:"Touchez une carte pour la lire en grand écran.",
+ locked:"Verrouillé",lockedS:"Scannez le QR du stand",open:"Lire",stand:"Stand",slogan:"Sécurisons notre avenir numérique",got:"Nouveau kit obtenu !",already:"Kit déjà obtenu.",bad:"QR code non reconnu.",
+ cam:"Caméra indisponible : scannez le QR avec l'appareil photo de votre téléphone.",point:"Placez le QR code dans le cadre",done:"Cadeau déjà réclamé. Merci d'avoir joué !",confirm:"Réclamer le cadeau ? Action unique, à faire devant un agent.",pin:"PIN agent (4 chiffres)",badpin:"PIN incorrect.",photo:"Utiliser une photo du QR",code:"Ou tapez le code du stand",inapp:"Ouvrez ce lien dans Chrome ou Safari (pas dans WhatsApp/Facebook)."},
 en:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visit the 3 stands, scan their QR code and collect your digital survival kits.",
- ptitle:"My collection",psub:n=>`${n}/3 kits unlocked`,scan:"📷 Scan a QR code",gift:"🎁 Claim my gift",gtitle:"My survival kits",gsub:"Tap a card to read it full screen.",
- locked:"Locked",lockedS:"Scan the stand's QR code",open:"Read",stand:"Stand",slogan:"Securing Our Digital Future",got:"🎉 New kit collected!",already:"Kit already collected.",bad:"QR code not recognized.",
- cam:"Camera unavailable: scan the QR with your phone's camera app.",point:"Place the QR code inside the frame",done:"✅ Gift already claimed. Thanks for playing!",confirm:"Claim your gift? One-time action, do it in front of an agent.",pin:"Agent PIN (4 digits)",badpin:"Wrong PIN.",dl:"⬇",zoom:"🔍",close:"✕",photo:"🖼 Use a photo of the QR"}};
+ ptitle:"My collection",psub:n=>`${n}/3 kits unlocked`,scan:"Scan a QR code",gift:"Claim my gift",gtitle:"My survival kits",gsub:"Tap a card to read it full screen.",
+ locked:"Locked",lockedS:"Scan the stand's QR code",open:"Read",stand:"Stand",slogan:"Securing Our Digital Future",got:"New kit collected!",already:"Kit already collected.",bad:"QR code not recognized.",
+ cam:"Camera unavailable: scan the QR with your phone's camera app.",point:"Place the QR code inside the frame",done:"Gift already claimed. Thanks for playing!",confirm:"Claim your gift? One-time action, do it in front of an agent.",pin:"Agent PIN (4 digits)",badpin:"Wrong PIN.",photo:"Use a photo of the QR",code:"Or type the stand code",inapp:"Open this link in Chrome or Safari (not inside WhatsApp/Facebook)."}};
 /* ========== ÉTAT ========== */
 const KEY="mtn_cv_v1";let mem=null;
 const load=()=>{try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)return s}catch(e){if(mem)return mem}return{lang:(navigator.language||"fr").startsWith("en")?"en":"fr",cards:[],redeemed:null}};
@@ -136,12 +138,12 @@ function render(){
  $("#acts").innerHTML=STANDS.map(s=>`<span>${ICON[s.card]} ${NAME[s.card][S.lang]}</span>`).join("");
  $("#ptitle").textContent=T.ptitle;$("#psub").textContent=T.psub(n);
  $("#dots").innerHTML=STANDS.map((s,i)=>`<i class="${i<n?"on":""}"></i>`).join("");
- $("#pcta").innerHTML=S.redeemed?"":all?`<button class="cta gift" id="gift">${T.gift}</button>`:`<button class="cta" id="scan">${T.scan}</button>`;
+ $("#pcta").innerHTML=S.redeemed?"":all?`<button class="cta gift" id="gift">${ic("gift")} ${T.gift}</button>`:`<button class="cta" id="scan">${ic("cam")} ${T.scan}</button>`;
  $("#gtitle").textContent=T.gtitle;$("#gsub").textContent=T.gsub;$("#slogan").textContent=T.slogan;
- $("#done").innerHTML=S.redeemed?`<div class="done">${T.done}</div>`:"";
+ $("#done").innerHTML=S.redeemed?`<div class="done">${ic("ok")} ${T.done}</div>`:"";
  $("#grid").innerHTML=STANDS.map((s,i)=>{const have=S.cards.includes(s.token),c=s.card;
-  return `<article class="tile ${have?"have":""}"><div class="thumb"><img src="${img(c)}" alt="${NAME[c][S.lang]}" ${have?`data-o="${c}"`:""}><div class="lock"><b>🔒</b><span>${T.stand} ${i+1} · ${T.locked}</span><small>${T.lockedS}</small></div></div>
-  <div class="meta"><div><h3>${ICON[c]} ${NAME[c][S.lang]}</h3><small>${T.stand} ${i+1}</small></div><button class="open" ${have?`data-o="${c}"`:"disabled"}>${have?T.open:"🔒"}</button></div></article>`}).join("");
+  return `<article class="tile ${have?"have":""}"><div class="thumb"><img src="${img(c)}" alt="${NAME[c][S.lang]}" ${have?`data-o="${c}"`:""}><div class="lock"><b>${ic("lock",46)}</b><span>${T.stand} ${i+1} · ${T.locked}</span><small>${T.lockedS}</small></div></div>
+  <div class="meta"><div><h3>${ICON[c]} ${NAME[c][S.lang]}</h3><small>${T.stand} ${i+1}</small></div><button class="open" ${have?`data-o="${c}"`:"disabled"}>${have?T.open:ic("lock")}</button></div></article>`}).join("");
  document.querySelectorAll("[data-o]").forEach(e=>e.onclick=()=>openCard(e.dataset.o));
  const sc=$("#scan");if(sc)sc.onclick=openScan;const g=$("#gift");if(g)g.onclick=redeem;
 }
@@ -154,9 +156,9 @@ function openCard(id){
  const T=t(),list=owned(),first=!$("#lb");cur=id;
  if(!first)$("#lb").remove();
  const o=document.createElement("div");o.className="lb";o.id="lb";
- o.innerHTML=`<div class="lbt"><strong>${ICON[id]} ${NAME[id][S.lang]}</strong><div><button class="ib" id="zm" title="Zoom">${T.zoom}</button><a class="ib" href="${img(id)}" download style="text-decoration:none;color:inherit" title="Download">${T.dl}</a><button class="ib" id="cl">${T.close}</button></div></div>
+ o.innerHTML=`<div class="lbt"><strong>${ICON[id]} ${NAME[id][S.lang]}</strong><div><button class="ib" id="zm" title="Zoom">${ic("zoom")}</button><a class="ib" href="${img(id)}" download style="text-decoration:none;color:inherit" title="Download">${ic("dl")}</a><button class="ib" id="cl">${ic("x")}</button></div></div>
  <div class="stage" id="st"><img src="${img(id)}" alt="${NAME[id][S.lang]}"></div>
- ${list.length>1?`<button class="nav l" id="pv">‹</button><button class="nav r" id="nx">›</button>`:""}`;
+ ${list.length>1?`<button class="nav l" id="pv">${ic("l",26)}</button><button class="nav r" id="nx">${ic("r",26)}</button>`:""}`;
  document.body.appendChild(o);
  const go=d=>openCard(list[(list.indexOf(cur)+d+list.length)%list.length]);
  $("#cl").onclick=closeLb;const z=()=>$("#st").classList.toggle("zoom");$("#zm").onclick=z;$("#st img").onclick=z;
@@ -165,22 +167,22 @@ function openCard(id){
  document.removeEventListener("keydown",key);document.addEventListener("keydown",key);window._go=go;
 }
 function key(e){if(e.key==="Escape")closeLb();if(e.key==="ArrowRight"&&window._go)window._go(1);if(e.key==="ArrowLeft"&&window._go)window._go(-1)}
-/* ========== SCAN (html5-qrcode) ========== */
+/* ========== SCAN (qr-scanner) ========== */
 let scanner=null;
-function stopCam(){if(scanner){const x=scanner;scanner=null;try{x.stop().then(()=>x.clear()).catch(()=>{})}catch(e){}}}
+function stopCam(){if(scanner){try{scanner.stop();scanner.destroy()}catch(e){}scanner=null}}
 function openScan(){
  const T=t(),o=document.createElement("div");o.className="lb";o.id="lb";
- o.innerHTML=`<div class="lbt"><strong>${T.scan}</strong><button class="ib" id="cl">${T.close}</button></div>
- <div class="stage"><div id="reader"></div></div><p class="msg" id="m">${T.point}</p>
- <div class="fb"><label class="ib" style="cursor:pointer">${T.photo}<input type="file" id="ff" accept="image/*" hidden></label></div>`;
+ o.innerHTML=`<div class="lbt"><strong>${T.scan}</strong><button class="ib" id="cl">${ic("x")}</button></div>
+ <div class="stage"><div class="vid"><video id="v" playsinline muted></video></div></div><p class="msg" id="m">${T.point}</p>
+ <div class="fb"><label class="ib" style="cursor:pointer">${ic("img")}&nbsp;${T.photo}<input type="file" id="ff" accept="image/*" hidden></label></div>
+ <div class="fb man"><input id="mc" placeholder="${T.code}" autocapitalize="off" autocomplete="off"><button class="ib" id="mb">OK</button></div>`;
  document.body.appendChild(o);$("#cl").onclick=closeLb;
  let fired=false;const ok=txt=>{if(fired)return;fired=true;closeLb();handle(parse(txt))};
- scanner=new Html5Qrcode("reader",{formatsToSupport:[Html5QrcodeSupportedFormats.QR_CODE],verbose:false});
- scanner.start({facingMode:"environment"},{fps:12,qrbox:(w,h)=>{const m=Math.floor(Math.min(w,h)*.72);return{width:m,height:m}}},ok,()=>{})
-  .catch(()=>{$("#m").textContent=T.cam});
- $("#ff").onchange=async e=>{const f=e.target.files[0];if(!f)return;
-  try{if(scanner){await scanner.stop();}}catch(_){}
-  try{const r=new Html5Qrcode("reader");const txt=await r.scanFile(f,false);ok(txt)}catch(_){$("#m").textContent=T.bad}};
+ scanner=new QrScanner($("#v"),r=>ok(r.data),{returnDetailedScanResult:true,preferredCamera:"environment",maxScansPerSecond:25,highlightCodeOutline:true,
+  calculateScanRegion:v=>({x:0,y:0,width:v.videoWidth,height:v.videoHeight,downScaledWidth:900,downScaledHeight:Math.round(900*v.videoHeight/v.videoWidth)})});
+ scanner.start().catch(e=>{$("#m").textContent=T.cam+" ("+((e&&(e.name||e.message))||e)+")"+(/FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(navigator.userAgent)?" "+T.inapp:"")});
+ $("#mb").onclick=()=>{const v=$("#mc").value.trim().toLowerCase();if(v)ok(v)};
+ $("#ff").onchange=e=>{const f=e.target.files[0];if(!f)return;QrScanner.scanImage(f,{returnDetailedScanResult:true}).then(r=>ok(r.data)).catch(()=>{$("#m").textContent=T.bad})};
 }
 const parse=d=>{try{return new URL(d).searchParams.get("c")||""}catch(e){return String(d).trim()}};
 function handle(tok){
