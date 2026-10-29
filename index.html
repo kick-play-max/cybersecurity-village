@@ -48,10 +48,63 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--y);outline-offset:3
 .wrap>h2{font-size:clamp(1.3rem,3vw,2rem);font-weight:900;text-transform:uppercase;margin-bottom:6px}
 .wrap>p{color:var(--g);margin-bottom:22px}
 .grid{display:grid;gap:clamp(14px,2.4vw,28px);grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
-.tile{background:var(--w);border-radius:var(--r);border:3px solid var(--k);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
-.tile.have:hover{transform:translateY(-6px);box-shadow:0 12px 0 var(--y)}
+.tile{perspective:1400px;animation:rise .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*140ms);cursor:pointer}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.96)}}
+.inner{display:grid;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.4,.2,.2,1)}
+.tile.flipped .inner{transform:rotateY(180deg)}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--w);border:3px solid var(--k);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .25s}
+.tile:hover .front{box-shadow:0 12px 0 var(--y)}
+.back{transform:rotateY(180deg);align-items:center;justify-content:center;text-align:center;gap:14px;padding:26px 20px;background:var(--k);color:var(--w)}
+.back h3{font-size:1.3rem;font-weight:900;text-transform:uppercase;color:var(--y)}
+.back p{color:#ccc;max-width:300px}
+.back .big{width:84px;height:84px;border-radius:50%;background:var(--y);color:var(--k);display:grid;place-items:center}
+.back .big .ic{width:44px;height:44px}
+.back.ok .big{background:var(--ok);color:#fff}
+.tile.pop .front{animation:glow 1.4s ease 2}
+@keyframes glow{50%{box-shadow:0 0 0 10px #ffcb0088,0 0 50px 10px #ffcb05}}
+.flipb{width:48px;height:48px;border-radius:50%;background:var(--y);color:var(--k);display:grid;place-items:center;flex:none;transition:transform .4s}
+.flipb:hover{transform:rotate(180deg)}
+.tap{position:absolute;left:12px;right:12px;bottom:12px;background:#000b;color:#fff;border-radius:12px;padding:8px 12px;font-size:.78rem;font-weight:700;text-align:center}
+.tile.have .tap{display:none}
+.bb{display:inline-flex;gap:10px;align-items:center;justify-content:center;min-height:54px;padding:0 22px;border-radius:16px;background:#fff;color:var(--k);font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 6px 0 #0006;transition:transform .12s,box-shadow .12s;cursor:pointer;border:0}
+.bb:hover{transform:translateY(-2px)}.bb:active{transform:translateY(4px);box-shadow:0 2px 0 #0006}
+.bb.close{background:var(--y)}
+.bb.dark{background:var(--y);color:var(--k)}
+.lbb{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:6px 14px calc(16px + env(safe-area-inset-bottom))}
+.hint{color:#bbb;text-align:center;font-size:.8rem;padding:0 16px 10px}
+.stage img{animation:zin .4s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes zin{from{opacity:0;transform:scale(.82) translateY(24px)}}
+.lb{animation:f .25s}
+.hero h1,.hero p,.pill,.hero img,.acts{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.pill{animation-delay:.1s}.hero h1{animation-delay:.2s}.hero p{animation-delay:.35s}.acts{animation-delay:.5s}
+.hero:before{animation:float 9s ease-in-out infinite}
+@keyframes float{50%{transform:translate(-30px,24px) scale(1.06)}}
+.acts span{transition:transform .2s,background .2s}.acts span:hover{transform:translateY(-3px);background:var(--y);color:var(--k)}
+.cta{position:relative;overflow:hidden}
+.cta:hover{transform:translateY(-3px)}
+.cta:before{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,#ffffff55,transparent);transform:skewX(-20deg);animation:shine 2.6s infinite}
+@keyframes shine{to{left:130%}}
+.dots i{transition:background .5s,transform .5s}.dots i.on{transform:scaleY(1.4)}
+.toast{animation:tin .4s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes tin{from{opacity:0;transform:translate(-50%,30px) scale(.8)}}
+.cf{position:fixed;top:42%;left:50%;width:10px;height:14px;z-index:100;pointer-events:none;animation:cf 1.3s cubic-bezier(.1,.8,.3,1) forwards}
+@keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+.vid{box-shadow:0 0 0 4px #ffffff22,0 20px 60px #000}
+.reticle{position:absolute;inset:12%;pointer-events:none;box-shadow:0 0 0 999px #0008;border-radius:18px;animation:pulse2 1.6s ease-in-out infinite;
+ background:linear-gradient(var(--y),var(--y)) top left/44px 6px,linear-gradient(var(--y),var(--y)) top left/6px 44px,linear-gradient(var(--y),var(--y)) top right/44px 6px,linear-gradient(var(--y),var(--y)) top right/6px 44px,linear-gradient(var(--y),var(--y)) bottom left/44px 6px,linear-gradient(var(--y),var(--y)) bottom left/6px 44px,linear-gradient(var(--y),var(--y)) bottom right/44px 6px,linear-gradient(var(--y),var(--y)) bottom right/6px 44px;background-repeat:no-repeat}
+@keyframes pulse2{50%{transform:scale(1.04)}}
+.laser{position:absolute;left:14%;right:14%;height:4px;border-radius:4px;background:linear-gradient(90deg,transparent,var(--y),transparent);box-shadow:0 0 18px 6px #ffcb0099;animation:sweep 1.8s ease-in-out infinite alternate;pointer-events:none}
+@keyframes sweep{from{top:16%}to{top:84%}}
+.flash{position:absolute;inset:0;background:#12a150;opacity:0;pointer-events:none}
+.hitmark{position:absolute;inset:0;display:grid;place-items:center;color:#fff;opacity:0;transform:scale(.3);pointer-events:none}
+.vid.hit .flash{animation:fl .7s ease}
+@keyframes fl{30%{opacity:.75}to{opacity:.55}}
+.vid.hit .hitmark{opacity:1;transform:scale(1);transition:.45s cubic-bezier(.2,1.6,.4,1)}
+.vid.hit .reticle,.vid.hit .laser{display:none}
+.msg{animation:blink 1.6s infinite}@keyframes blink{50%{opacity:.55}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .thumb{position:relative;background:var(--y);aspect-ratio:650/1004;max-height:560px;width:100%;overflow:hidden;display:grid;place-items:center}
-.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;cursor:zoom-in}
+.thumb{cursor:pointer}.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;cursor:zoom-in}
 .tile:not(.have) .thumb img{filter:blur(16px) grayscale(1) brightness(.7);transform:scale(1.1);cursor:default}
 .lock{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:var(--w);gap:6px;padding:16px;font-weight:800}
 .lock b{display:block}.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
@@ -77,11 +130,11 @@ footer b{color:var(--y)}
 .stage img{margin:auto;max-height:100%;max-width:100%;object-fit:contain;border-radius:14px;box-shadow:0 20px 60px #000a;transition:.2s}
 .stage.zoom{cursor:zoom-out}
 .stage.zoom img{max-height:none;max-width:none;width:max(100%,900px)}
-.nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:var(--y);color:var(--k);font-size:1.6rem;font-weight:900;box-shadow:0 4px 14px #0008}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:60px;height:60px;display:grid;place-items:center;border-radius:50%;background:var(--y);color:var(--k);font-size:1.6rem;font-weight:900;box-shadow:0 4px 14px #0008}
 .nav.l{left:14px}.nav.r{right:14px}
 .vid{position:relative;margin:auto;width:min(92vw,420px);aspect-ratio:3/4;border-radius:22px;overflow:hidden;background:#000}
 .vid video{width:100%;height:100%;object-fit:cover}
-.vid:after{content:"";position:absolute;inset:12%;border:4px solid var(--y);border-radius:20px;pointer-events:none}
+
 .fb{display:flex;justify-content:center;padding:0 16px calc(20px + env(safe-area-inset-bottom))}
 .man{gap:8px}.man input{flex:1;max-width:260px;padding:0 14px;height:44px;border-radius:12px;border:0;font:inherit}
 .msg{color:#fff;text-align:center;padding:0 16px 20px;font-weight:600}
@@ -110,7 +163,7 @@ footer b{color:var(--y)}
 /* ========== CONFIG ========== */
 const STANDS=[{token:"k7x2",card:"hygiene"},{token:"m4q9",card:"phishing"},{token:"z8p5",card:"incident"}];
 const STAFF_PIN=""; // 4 chiffres pour valider le cadeau ; "" = désactivé
-const P={hygiene:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',phishing:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',incident:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18.5v.01"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/>',gift:'<rect x="3" y="8" width="18" height="4"/><path d="M5 12h14v9H5zM12 8v13M12 8c-3 0-4-4-1.5-4S12 8 12 8zM12 8c3 0 4-4 1.5-4S12 8 12 8z"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-8 9"/>',zoom:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/>',dl:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',l:'<path d="M15 5l-7 7 7 7"/>',r:'<path d="M9 5l7 7-7 7"/>'};
+const P={flip:'<path d="M4 12a8 8 0 0114-5l2 2M20 4v5h-5M20 12a8 8 0 01-14 5l-2-2M4 20v-5h5"/>',hygiene:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',phishing:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',incident:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18.5v.01"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/>',gift:'<rect x="3" y="8" width="18" height="4"/><path d="M5 12h14v9H5zM12 8v13M12 8c-3 0-4-4-1.5-4S12 8 12 8zM12 8c3 0 4-4 1.5-4S12 8 12 8z"/>',img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-8 9"/>',zoom:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/>',dl:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',l:'<path d="M15 5l-7 7 7 7"/>',r:'<path d="M9 5l7 7-7 7"/>'};
 const ic=(n,z)=>`<svg class="ic" ${z?`style="width:${z}px;height:${z}px"`:""} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
 const ICON={hygiene:ic("hygiene"),phishing:ic("phishing"),incident:ic("incident")};
 const NAME={hygiene:{fr:"Cyber-hygiène",en:"Cyber Hygiene"},phishing:{fr:"Phishing",en:"Phishing"},incident:{fr:"Réponse à incident",en:"Incident Response"}};
@@ -118,11 +171,11 @@ const L={
 fr:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visitez les 3 stands, scannez leur QR code et collectez vos kits de survie numérique.",
  ptitle:"Ma collection",psub:n=>`${n}/3 kits débloqués`,scan:"Scanner un QR code",gift:"Réclamer mon cadeau",gtitle:"Mes kits de survie",gsub:"Touchez une carte pour la lire en grand écran.",
  locked:"Verrouillé",lockedS:"Scannez le QR du stand",open:"Lire",stand:"Stand",slogan:"Sécurisons notre avenir numérique",got:"Nouveau kit obtenu !",already:"Kit déjà obtenu.",bad:"QR code non reconnu.",
- cam:"Caméra indisponible : scannez le QR avec l'appareil photo de votre téléphone.",point:"Placez le QR code dans le cadre",done:"Cadeau déjà réclamé. Merci d'avoir joué !",confirm:"Réclamer le cadeau ? Action unique, à faire devant un agent.",pin:"PIN agent (4 chiffres)",badpin:"PIN incorrect.",photo:"Utiliser une photo du QR",code:"Ou tapez le code du stand",inapp:"Ouvrez ce lien dans Chrome ou Safari (pas dans WhatsApp/Facebook)."},
+ cam:"Caméra indisponible : scannez le QR avec l'appareil photo de votre téléphone.",point:"Placez le QR code dans le cadre",done:"Cadeau déjà réclamé. Merci d'avoir joué !",confirm:"Réclamer le cadeau ? Action unique, à faire devant un agent.",pin:"PIN agent (4 chiffres)",badpin:"PIN incorrect.",photo:"Utiliser une photo du QR",howto:"Rendez-vous à ce stand et scannez son QR code pour débloquer ce kit.",owned:"Kit obtenu",backT:"Retour",tapLocked:"Touchez pour voir comment l'obtenir",closeT:"Fermer",zoomT:"Zoom",dlT:"Télécharger",hint:"Touchez la carte pour zoomer · glissez ou utilisez les flèches pour changer de carte",code:"Ou tapez le code du stand",inapp:"Ouvrez ce lien dans Chrome ou Safari (pas dans WhatsApp/Facebook)."},
 en:{pill:"Cybersecurity Awareness Month",h1:["Cybersecurity","<em>Village</em>"],sub:"Visit the 3 stands, scan their QR code and collect your digital survival kits.",
  ptitle:"My collection",psub:n=>`${n}/3 kits unlocked`,scan:"Scan a QR code",gift:"Claim my gift",gtitle:"My survival kits",gsub:"Tap a card to read it full screen.",
  locked:"Locked",lockedS:"Scan the stand's QR code",open:"Read",stand:"Stand",slogan:"Securing Our Digital Future",got:"New kit collected!",already:"Kit already collected.",bad:"QR code not recognized.",
- cam:"Camera unavailable: scan the QR with your phone's camera app.",point:"Place the QR code inside the frame",done:"Gift already claimed. Thanks for playing!",confirm:"Claim your gift? One-time action, do it in front of an agent.",pin:"Agent PIN (4 digits)",badpin:"Wrong PIN.",photo:"Use a photo of the QR",code:"Or type the stand code",inapp:"Open this link in Chrome or Safari (not inside WhatsApp/Facebook)."}};
+ cam:"Camera unavailable: scan the QR with your phone's camera app.",point:"Place the QR code inside the frame",done:"Gift already claimed. Thanks for playing!",confirm:"Claim your gift? One-time action, do it in front of an agent.",pin:"Agent PIN (4 digits)",badpin:"Wrong PIN.",photo:"Use a photo of the QR",howto:"Go to this stand and scan its QR code to unlock this kit.",owned:"Kit collected",backT:"Back",tapLocked:"Tap to see how to get it",closeT:"Close",zoomT:"Zoom",dlT:"Download",hint:"Tap the card to zoom · swipe or use the arrows to switch cards",code:"Or type the stand code",inapp:"Open this link in Chrome or Safari (not inside WhatsApp/Facebook)."}};
 /* ========== ÉTAT ========== */
 const KEY="mtn_cv_v1";let mem=null;
 const load=()=>{try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)return s}catch(e){if(mem)return mem}return{lang:(navigator.language||"fr").startsWith("en")?"en":"fr",cards:[],redeemed:null}};
@@ -141,13 +194,22 @@ function render(){
  $("#pcta").innerHTML=S.redeemed?"":all?`<button class="cta gift" id="gift">${ic("gift")} ${T.gift}</button>`:`<button class="cta" id="scan">${ic("cam")} ${T.scan}</button>`;
  $("#gtitle").textContent=T.gtitle;$("#gsub").textContent=T.gsub;$("#slogan").textContent=T.slogan;
  $("#done").innerHTML=S.redeemed?`<div class="done">${ic("ok")} ${T.done}</div>`:"";
- $("#grid").innerHTML=STANDS.map((s,i)=>{const have=S.cards.includes(s.token),c=s.card;
-  return `<article class="tile ${have?"have":""}"><div class="thumb"><img src="${img(c)}" alt="${NAME[c][S.lang]}" ${have?`data-o="${c}"`:""}><div class="lock"><b>${ic("lock",46)}</b><span>${T.stand} ${i+1} · ${T.locked}</span><small>${T.lockedS}</small></div></div>
-  <div class="meta"><div><h3>${ICON[c]} ${NAME[c][S.lang]}</h3><small>${T.stand} ${i+1}</small></div><button class="open" ${have?`data-o="${c}"`:"disabled"}>${have?T.open:ic("lock")}</button></div></article>`}).join("");
- document.querySelectorAll("[data-o]").forEach(e=>e.onclick=()=>openCard(e.dataset.o));
+ $("#grid").innerHTML=STANDS.map((s,i)=>{const have=S.cards.includes(s.token),c=s.card,nm=NAME[c][S.lang];
+  return `<article class="tile ${have?"have":""}" data-i="${i}" style="--i:${i}"><div class="inner">
+  <div class="face front"><div class="thumb"><img src="${img(c)}" alt="${nm}"><div class="lock"><b>${ic("lock",46)}</b><span>${T.stand} ${i+1} · ${T.locked}</span></div><div class="tap">${T.tapLocked}</div></div>
+  <div class="meta"><div><h3>${ICON[c]} ${nm}</h3><small>${T.stand} ${i+1}</small></div><div style="display:flex;gap:8px;align-items:center">${have?`<button class="open" data-a="open">${T.open}</button>`:""}<button class="flipb" data-a="flip" aria-label="flip">${ic("flip",22)}</button></div></div></div>
+  <div class="face back ${have?"ok":""}"><div class="big">${have?ic("ok"):ic("lock")}</div><h3>${nm}</h3>
+   <p>${have?T.owned:T.howto}</p>
+   ${have?`<button class="bb dark" data-a="open">${ic("zoom")}<span>${T.open}</span></button><a class="bb" data-a="dl" href="${img(c)}" download>${ic("dl")}<span>${T.dlT}</span></a>`:`<button class="bb dark" data-a="scan">${ic("cam")}<span>${T.scan}</span></button>`}
+   <button class="bb" data-a="flip">${ic("flip")}<span>${T.backT}</span></button></div></div></article>`}).join("");
  const sc=$("#scan");if(sc)sc.onclick=openScan;const g=$("#gift");if(g)g.onclick=redeem;
 }
 document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{S.lang=b.dataset.l;save();render();if($("#lb"))openCard(cur)});
+$("#grid").onclick=e=>{const tile=e.target.closest(".tile");if(!tile)return;const i=+tile.dataset.i,c=STANDS[i].card,have=tile.classList.contains("have"),a=(e.target.closest("[data-a]")||{dataset:{}}).dataset.a;
+ if(a==="dl")return;if(a==="scan")return openScan();if(a==="open")return openCard(c);
+ if(a==="flip"||!have)return tile.classList.toggle("flipped");openCard(c)};
+function burst(){const col=["#ffcb05","#0b0b0b","#fff","#12a150"];for(let i=0;i<56;i++){const p=document.createElement("i");p.className="cf";const an=Math.random()*6.28,d=140+Math.random()*260;
+ p.style.cssText=`background:${col[i%4]};--x:${Math.cos(an)*d}px;--y:${Math.sin(an)*d+160}px;--r:${Math.random()*900-450}deg;border-radius:${i%3?"2px":"50%"}`;document.body.appendChild(p);setTimeout(()=>p.remove(),1400)}}
 /* ========== PLEIN ÉCRAN ========== */
 let cur=null;
 function closeLb(){const o=$("#lb");if(o)o.remove();stopCam();document.removeEventListener("keydown",key);cur=null}
@@ -156,12 +218,13 @@ function openCard(id){
  const T=t(),list=owned(),first=!$("#lb");cur=id;
  if(!first)$("#lb").remove();
  const o=document.createElement("div");o.className="lb";o.id="lb";
- o.innerHTML=`<div class="lbt"><strong>${ICON[id]} ${NAME[id][S.lang]}</strong><div><button class="ib" id="zm" title="Zoom">${ic("zoom")}</button><a class="ib" href="${img(id)}" download style="text-decoration:none;color:inherit" title="Download">${ic("dl")}</a><button class="ib" id="cl">${ic("x")}</button></div></div>
- <div class="stage" id="st"><img src="${img(id)}" alt="${NAME[id][S.lang]}"></div>
- ${list.length>1?`<button class="nav l" id="pv">${ic("l",26)}</button><button class="nav r" id="nx">${ic("r",26)}</button>`:""}`;
+ o.innerHTML=`<div class="lbt"><strong>${ICON[id]} ${NAME[id][S.lang]}</strong><button class="bb close" id="cl">${ic("x")}<span>${T.closeT}</span></button></div>
+ <div class="stage" id="st"><img src="${img(id)}" alt="${NAME[id][S.lang]}"></div><p class="hint">${T.hint}</p>
+ <div class="lbb"><button class="bb" id="zm">${ic("zoom")}<span>${T.zoomT}</span></button><a class="bb dark" href="${img(id)}" download>${ic("dl")}<span>${T.dlT}</span></a></div>
+ ${list.length>1?`<button class="nav l" id="pv">${ic("l",28)}</button><button class="nav r" id="nx">${ic("r",28)}</button>`:""}`;
  document.body.appendChild(o);
  const go=d=>openCard(list[(list.indexOf(cur)+d+list.length)%list.length]);
- $("#cl").onclick=closeLb;const z=()=>$("#st").classList.toggle("zoom");$("#zm").onclick=z;$("#st img").onclick=z;
+ $("#cl").onclick=closeLb;$("#st").onclick=e=>{if(e.target.id==="st"&&!$("#st").classList.contains("zoom"))closeLb()};const z=()=>$("#st").classList.toggle("zoom");$("#zm").onclick=z;$("#st img").onclick=z;
  if(list.length>1){$("#pv").onclick=()=>go(-1);$("#nx").onclick=()=>go(1)}
  let x0=0;o.ontouchstart=e=>x0=e.touches[0].clientX;o.ontouchend=e=>{const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>70&&list.length>1&&!$("#st").classList.contains("zoom"))go(d<0?1:-1)};
  document.removeEventListener("keydown",key);document.addEventListener("keydown",key);window._go=go;
@@ -172,12 +235,12 @@ let scanner=null;
 function stopCam(){if(scanner){try{scanner.stop();scanner.destroy()}catch(e){}scanner=null}}
 function openScan(){
  const T=t(),o=document.createElement("div");o.className="lb";o.id="lb";
- o.innerHTML=`<div class="lbt"><strong>${T.scan}</strong><button class="ib" id="cl">${ic("x")}</button></div>
- <div class="stage"><div class="vid"><video id="v" playsinline muted></video></div></div><p class="msg" id="m">${T.point}</p>
- <div class="fb"><label class="ib" style="cursor:pointer">${ic("img")}&nbsp;${T.photo}<input type="file" id="ff" accept="image/*" hidden></label></div>
- <div class="fb man"><input id="mc" placeholder="${T.code}" autocapitalize="off" autocomplete="off"><button class="ib" id="mb">OK</button></div>`;
+ o.innerHTML=`<div class="lbt"><strong>${T.scan}</strong><button class="bb close" id="cl">${ic("x")}<span>${T.closeT}</span></button></div>
+ <div class="stage"><div class="vid"><video id="v" playsinline muted></video><div class="reticle"></div><div class="laser"></div><div class="flash"></div><div class="hitmark">${ic("ok",110)}</div></div></div><p class="msg" id="m">${T.point}</p>
+ <div class="fb"><label class="bb" style="cursor:pointer">${ic("img")}&nbsp;${T.photo}<input type="file" id="ff" accept="image/*" hidden></label></div>
+ <div class="fb man"><input id="mc" placeholder="${T.code}" autocapitalize="off" autocomplete="off"><button class="bb dark" id="mb">OK</button></div>`;
  document.body.appendChild(o);$("#cl").onclick=closeLb;
- let fired=false;const ok=txt=>{if(fired)return;fired=true;closeLb();handle(parse(txt))};
+ let fired=false;const ok=txt=>{if(fired)return;fired=true;try{navigator.vibrate&&navigator.vibrate([60,40,90])}catch(_){}const v=$(".vid");if(v)v.classList.add("hit");if(scanner)try{scanner.stop()}catch(_){}setTimeout(()=>{closeLb();handle(parse(txt))},750)};
  scanner=new QrScanner($("#v"),r=>ok(r.data),{returnDetailedScanResult:true,preferredCamera:"environment",maxScansPerSecond:25,highlightCodeOutline:true,
   calculateScanRegion:v=>({x:0,y:0,width:v.videoWidth,height:v.videoHeight,downScaledWidth:900,downScaledHeight:Math.round(900*v.videoHeight/v.videoWidth)})});
  scanner.start().catch(e=>{$("#m").textContent=T.cam+" ("+((e&&(e.name||e.message))||e)+")"+(/FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(navigator.userAgent)?" "+T.inapp:"")});
@@ -189,7 +252,7 @@ function handle(tok){
  const T=t(),st=STANDS.find(s=>s.token===tok);
  if(S.redeemed)return;if(!st)return toast(T.bad,1);
  if(S.cards.includes(tok)){toast(T.already,1);return openCard(st.card)}
- S.cards.push(tok);save();render();toast(T.got);openCard(st.card);
+ S.cards.push(tok);save();render();burst();toast(T.got);const ix=STANDS.indexOf(st);setTimeout(()=>{const el=document.querySelectorAll(".tile")[ix];if(el){el.classList.add("pop");el.scrollIntoView({behavior:"smooth",block:"center"})}},300);setTimeout(()=>openCard(st.card),1100);
 }
 function redeem(){
  const T=t();if(!confirm(T.confirm))return;
